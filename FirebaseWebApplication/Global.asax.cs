@@ -1,3 +1,5 @@
+using FirebaseWebApplication.App_Start;
+using FirebaseWebApplication.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,9 @@ namespace FirebaseWebApplication
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            FirebaseConfig.Load();
+
+            FirebaseService.Instance.Send("testtt");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace FirebaseWebApplication.App_Start
         {
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile("path/to/refreshToken.json"),
+                Credential = GoogleCredential.FromFile("/Users/tact/source/repos/ASP-Firebase/FirebaseWebApplication/Keys/ASP-firebasekey.json"),
             });
         }
     }
