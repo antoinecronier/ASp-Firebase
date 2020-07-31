@@ -2,6 +2,7 @@
 using FirebaseClassLibrary.Services;
 using FirebaseWebApplication.Data;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -16,6 +17,21 @@ namespace FirebaseWebApplication.Controllers.Api
     public abstract class BaseApiController<T> : ApiController where T : class, ApiItem, DbItem, new()
     {
         protected WebApiDbContext db = new WebApiDbContext();
+        private static Dictionary<string, long> controllersAccess = new Dictionary<string, long>();
+
+        private void UpdateControllerAccess()
+        {
+            if (!controllersAccess.ContainsKey(new T().GetType().Name))
+            {
+                controllersAccess.Add(new T().GetType().Name, 1);
+            }
+            else
+            {
+                controllersAccess[new T().GetType().Name]++;
+            }
+
+            RealtimeDatabaseService.Instance.UpdateApiAction(new FirebaseResume() { CurrentTime = DateTime.Now, ControllersAccess = controllersAccess });
+        }
 
         [Route()]
         [HttpGet]
@@ -23,6 +39,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItems" });
             });
             return db.Set<T>();
@@ -34,6 +51,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItems with subItem" });
             });
             return db.Set<T>().Include(subItem);
@@ -44,6 +62,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItem" });
             });
             T item = await db.Set<T>().FindAsync(id);
@@ -61,6 +80,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItemWithSub" });
             });
             T item = await db.Set<T>().Include(subItem).FirstOrDefaultAsync(x => x.Id == id);
@@ -78,6 +98,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "PutItem" });
             });
             if (!ModelState.IsValid)
@@ -117,6 +138,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "PostItem" });
             });
             if (!ModelState.IsValid)
@@ -136,6 +158,7 @@ namespace FirebaseWebApplication.Controllers.Api
         {
             Task.Factory.StartNew(() =>
             {
+                this.UpdateControllerAccess();
                 RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "DeleteItem" });
             });
             T item = await db.Set<T>().FindAsync(id);

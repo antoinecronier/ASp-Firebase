@@ -40,6 +40,15 @@ namespace FirebaseClassLibrary.Services
               .Child(controller)
               .PostAsync(item.ToJson());
         }
+
+        public async void UpdateApiAction(FirebaseItem item)
+        {
+            await realtimeDb
+              .Child("log")
+              .Child("resume")
+              .PutAsync(item.ToJson());
+        }
+
         public Task<IReadOnlyCollection<FirebaseObject<T>>> GetApiDatas<T>(string controller) where T : FirebaseItem
         {
             return realtimeDb.Child("log").Child(controller).OnceAsync<T>();

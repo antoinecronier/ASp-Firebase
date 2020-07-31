@@ -238,6 +238,7 @@
     <Compile Include="Entities\EquipmentType.cs" />
     <Compile Include="Entities\FirebaseItem.cs" />
     <Compile Include="Entities\FirebaseLog.cs" />
+    <Compile Include="Entities\FirebaseResume.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Extensions\JsonExtensions.cs" />
