@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FirebaseClassLibrary.Entities
 {
-    public interface ApiItem : FirebaseItem
+    public interface FirebaseItem
     {
     }
 }

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace FirebaseClassLibrary.Entities
 {
-    public interface ApiItem : FirebaseItem
+    public class FirebaseLog : FirebaseItem
     {
+        public DateTime CurrentTime { get; set; }
+        public string Data { get; set; }
     }
 }

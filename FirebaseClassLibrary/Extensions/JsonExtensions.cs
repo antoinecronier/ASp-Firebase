@@ -10,7 +10,7 @@ namespace FirebaseClassLibrary.Extensions
 {
     public static class JsonExtensions
     {
-        public static String ToJson(this ApiItem item)
+        public static String ToJson(this FirebaseItem item)
         {
             return JsonConvert.SerializeObject(item);
         }

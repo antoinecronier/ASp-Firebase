@@ -1,5 +1,7 @@
 ﻿using FirebaseClassLibrary.Entities;
+using FirebaseClassLibrary.Services;
 using FirebaseWebApplication.Data;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -19,6 +21,10 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpGet]
         public IQueryable<T> GetItems()
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItems" });
+            });
             return db.Set<T>();
         }
 
@@ -26,12 +32,20 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpGet]
         public IQueryable<T> GetItems(string subItem)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItems with subItem" });
+            });
             return db.Set<T>().Include(subItem);
         }
 
         [Route("{id}")]
         public async Task<IHttpActionResult> GetItem(long id)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItem" });
+            });
             T item = await db.Set<T>().FindAsync(id);
             if (item == null)
             {
@@ -45,6 +59,10 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpGet]
         public async Task<IHttpActionResult> GetItemWithSub(long id, string subItem)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "GetItemWithSub" });
+            });
             T item = await db.Set<T>().Include(subItem).FirstOrDefaultAsync(x => x.Id == id);
             if (item == null)
             {
@@ -58,6 +76,10 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpPut]
         public async Task<IHttpActionResult> PutItem(long id, T item)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "PutItem" });
+            });
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -93,6 +115,10 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpPost]
         public async Task<IHttpActionResult> PostItem(T item)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "PostItem" });
+            });
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -108,6 +134,10 @@ namespace FirebaseWebApplication.Controllers.Api
         [HttpDelete]
         public async Task<IHttpActionResult> DeleteItem(long id)
         {
+            Task.Factory.StartNew(() =>
+            {
+                RealtimeDatabaseService.Instance.LogApiAction(new T().GetType().Name, new FirebaseLog() { CurrentTime = DateTime.Now, Data = "DeleteItem" });
+            });
             T item = await db.Set<T>().FindAsync(id);
             if (item == null)
             {
